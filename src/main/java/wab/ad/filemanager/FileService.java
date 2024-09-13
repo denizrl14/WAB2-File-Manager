@@ -9,23 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class FileService {
 
     private final Path rootLocation = Paths.get("upload-dir");
 
-    @Autowired
-    private FileRepository fileRepository;
-
     public void store(MultipartFile file) throws IOException {
-        Files.copy(file.getInputStream(), this.rootLocation.resolve(Objects.requireNonNull(file.getOriginalFilename())));
-
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setFileName(file.getOriginalFilename());
-        fileEntity.setFileType(file.getContentType());
-        fileEntity.setSize(file.getSize());
-        fileRepository.save(fileEntity);
+        String uniqueFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Files.copy(file.getInputStream(), this.rootLocation.resolve(uniqueFilename));
     }
 
     public byte[] loadFile(String filename) throws IOException {
