@@ -73,17 +73,40 @@ public class FileService {
 
     public byte[] loadFile(String filename) throws IOException {
         Timer.Sample sample = Timer.start(meterRegistry);
+        byte[] fileContent = null;
         try {
             Path file = rootLocation.resolve(filename);
-            byte[] fileContent = Files.readAllBytes(file);
+            fileContent = Files.readAllBytes(file);
 
+            // Zähle heruntergeladene Bytes
             meterRegistry.counter("fileManager_download_bytes", "fileName", filename)
                     .increment(fileContent.length);
 
             return fileContent;
         } finally {
+            Runtime runtime = Runtime.getRuntime();
+            OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
-            sample.stop(meterRegistry.timer("fileManager_download_timer", "fileName", filename));
+            // Gesamter Speicher, der der JVM zugewiesen wurde (in Bytes)
+            long totalMemory = runtime.totalMemory();
+            // Freier Speicher innerhalb der JVM (in Bytes)
+            long freeMemory = runtime.freeMemory();
+            // Verwendeter Speicher (berechnet als totalMemory - freeMemory)
+            long processUsedMemory = totalMemory - freeMemory;
+
+            // CPU-Auslastung für den Prozess in Prozent
+            double processCpuLoad = osBean.getProcessCpuLoad() * 100;
+
+            // Stoppe den Timer und erhalte die Download-Zeit in Nanosekunden
+            long downloadTime = sample.stop(meterRegistry.timer("fileManager_download_timer", "fileName", filename));
+
+            // Zeitstempel für den CSV-Eintrag
+            LocalDateTime timestamp = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedTimestamp = timestamp.format(formatter);
+
+            // Daten in CSV speichern
+            metricSaver.saveMetricsToCSV(formattedTimestamp, fileContent.length, downloadTime, processCpuLoad, processUsedMemory, "Download");
         }
     }
 }
