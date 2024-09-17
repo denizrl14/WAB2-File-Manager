@@ -43,3 +43,10 @@ configurations {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+task deleteFolder(type: Delete) {
+    delete fileTree(dir: 'upload-dir', includes: ['**/*']).matching {
+        exclude '**/TestFile'
+    }
+}
+
