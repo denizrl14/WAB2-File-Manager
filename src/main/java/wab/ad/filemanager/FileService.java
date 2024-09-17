@@ -1,22 +1,12 @@
 package wab.ad.filemanager;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class FileService {
@@ -25,7 +15,7 @@ public class FileService {
 
     public void store(MultipartFile file) throws IOException {
         try {
-            String uniqueFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String uniqueFilename = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Files.copy(file.getInputStream(), this.rootLocation.resolve(uniqueFilename));
         } catch (IOException e) {
             throw new IOException("Failed to store file: " + e.getMessage());
