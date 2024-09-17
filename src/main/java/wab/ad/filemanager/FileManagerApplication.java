@@ -3,7 +3,6 @@ package wab.ad.filemanager;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +20,5 @@ public class FileManagerApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Files.createDirectories(rootLocation);
     }
-
 
 }

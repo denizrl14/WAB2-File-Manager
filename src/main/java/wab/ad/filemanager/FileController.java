@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -34,4 +33,5 @@ public class FileController {
                         .body(fileContent))
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(404).body(("Failed to download file: " + Arrays.toString(e.getMessage().getBytes(StandardCharsets.UTF_8))).getBytes())));
     }
+
 }
