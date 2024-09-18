@@ -22,4 +22,6 @@ public class FileEntity {
 
     private long size;
 
+
+
 }

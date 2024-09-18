@@ -1,5 +1,7 @@
 package wab.ad.filemanager;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import java.util.UUID;
 
 @Service
@@ -15,11 +18,22 @@ public class FileService {
 
     private final Path rootLocation = Paths.get("upload-dir");
 
+    private final FileRepository fileRepository;
+
+    public FileService(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
+
     public Mono<Void> store(MultipartFile file) {
         return Mono.fromRunnable(() -> {
             try {
-                String uniqueFilename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                Files.copy(file.getInputStream(), this.rootLocation.resolve(uniqueFilename));
+                FileEntity fileEntity = new FileEntity();
+                String fileName = fileEntity.getId().toString() + "-" + file.getOriginalFilename();
+                Files.copy(file.getInputStream(), this.rootLocation.resolve(fileName));
+                fileEntity.setFileName(fileName);
+                fileEntity.setFileType(file.getContentType());
+                fileEntity.setSize(file.getSize());
+                fileRepository.save(fileEntity);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to store file", e);
             }
