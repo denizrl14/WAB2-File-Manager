@@ -20,7 +20,7 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        log.info("<<<<<< Uploading file: " + file.getOriginalFilename() + " <<<<<<");
+        log.info("<<<<< Uploading file: " + file.getOriginalFilename() + " <<<<<");
         try {
             fileService.storeFile(file);
             return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
@@ -31,7 +31,7 @@ public class FileController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
-        log.info(">>>>>> Downloading file with id: " + id + " >>>>>>");
+        log.info(">>>>> Downloading file with id: " + id + " >>>>>");
         try {
             FileEntity fileEntity = fileService.getFileById(id);
             byte[] fileContent = fileEntity.getContent();
