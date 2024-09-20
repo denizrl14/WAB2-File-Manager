@@ -3,7 +3,6 @@ package wab.ad.filemanager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public class FileService {
@@ -23,12 +22,8 @@ public class FileService {
         }
     }
 
-    public FileEntity getFileById(Long id) throws IOException {
+    public FileEntity getFileById(Long id) {
         return fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File not found"));
-    }
-
-    public List<FileEntity> getAllFiles() {
-        return fileRepository.findAll();
     }
 
 }
