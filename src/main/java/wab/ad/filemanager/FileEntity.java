@@ -1,11 +1,10 @@
 package wab.ad.filemanager;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,6 +21,16 @@ public class FileEntity {
 
     private long size;
 
+    @Lob
+    private byte[] content;
 
+    public FileEntity(String fileName, String fileType, long size, byte[] content) {
+        this.fileName = UUID.randomUUID() + "_" + fileName;
+        this.fileType = fileType;
+        this.size = size;
+        this.content = content;
+    }
+
+    public FileEntity() {}
 
 }

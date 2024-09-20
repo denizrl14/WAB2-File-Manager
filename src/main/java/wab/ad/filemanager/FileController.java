@@ -24,14 +24,19 @@ public class FileController {
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage())));
     }
 
-    @GetMapping("/download/{filename}")
-    public Mono<ResponseEntity<byte[]>> downloadFile(@PathVariable String filename) {
-        return fileService.loadFile(filename)
-                .map(fileContent -> ResponseEntity.ok()
-                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                        .body(fileContent))
-                .onErrorResume(e -> Mono.just(ResponseEntity.status(404).body(("Failed to download file: " + Arrays.toString(e.getMessage().getBytes(StandardCharsets.UTF_8))).getBytes())));
+    @GetMapping("/download/{id}")
+    public Mono<ResponseEntity<byte[]>> downloadFile(@PathVariable Long id) {
+        try {
+            return fileService.getFileById(id)
+                    .map(fileEntity -> ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileEntity.getFileName() + "\"")
+                            .body(fileEntity.getContent()))
+                    .onErrorResume(e -> Mono.just(ResponseEntity.status(404).body(("Failed to download file: " + Arrays.toString(e.getMessage().getBytes(StandardCharsets.UTF_8))).getBytes())));
+        } catch (Exception e) {
+            return Mono.just(ResponseEntity.status(404).body(("Failed to download file: " + Arrays.toString(e.getMessage()
+                    .getBytes(StandardCharsets.UTF_8))).getBytes()));
+        }
     }
 
 }
