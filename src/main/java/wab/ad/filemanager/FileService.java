@@ -18,12 +18,12 @@ public class FileService {
             FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
             this.fileRepository.save(fileEntity);
         } catch (IOException e) {
-            throw new IOException("Failed to store file: " + e.getMessage());
+            throw new IOException();
         }
     }
 
-    public FileEntity getFileById(Long id) {
-        return fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File not found"));
+    public FileEntity getFileById(Long id) throws IOException{
+        return fileRepository.findById(id).orElseThrow(() -> new IOException("File not found"));
     }
 
 }

@@ -1,5 +1,6 @@
 package wab.ad.filemanager;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequestMapping("/files")
 public class FileController {
@@ -18,6 +20,7 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        log.info("<<<<<< Uploading file: " + file.getOriginalFilename() + " <<<<<<");
         try {
             fileService.storeFile(file);
             return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
@@ -28,6 +31,7 @@ public class FileController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
+        log.info(">>>>>> Downloading file with id: " + id + " >>>>>>");
         try {
             FileEntity fileEntity = fileService.getFileById(id);
             byte[] fileContent = fileEntity.getContent();
@@ -35,8 +39,8 @@ public class FileController {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileEntity.getFileName() + "\"")
                     .body(fileContent);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(("Failed to download file: " + e.getMessage()).getBytes());
+        } catch (IOException e) {
+            return ResponseEntity.status(404).body(("Failed to download file: " + e.getMessage()).getBytes());
         }
     }
 

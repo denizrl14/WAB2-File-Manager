@@ -1,0 +1,27 @@
+services:
+  app:
+    image: file-manager:latest
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: file-manager-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:fmdb
+      SPRING_DATASOURCE_USERNAME: deniz
+      Spring_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+    depends_on:
+        - db
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1"
+  db:
+    image: oscarfonts/h2:latest
+    container_name: h2-database
+    ports:
+      - "8082:8082"
