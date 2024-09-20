@@ -18,10 +18,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: "1"
+          memory: 2G
+          cpus: "4"
   db:
-    image: oscarfonts/h2:latest
+    image: thomseno/h2
     container_name: h2-database
     ports:
       - "8082:8082"
