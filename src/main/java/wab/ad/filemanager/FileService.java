@@ -26,18 +26,6 @@ public class FileService {
         }).subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
-//
-//    public Mono<byte[]> loadFile(String filename) {
-//        return Mono.fromCallable(() -> {
-//                    try {
-//                        Path file = rootLocation.resolve(filename);
-//                        return Files.readAllBytes(file);
-//                    } catch (IOException e) {
-//                        throw new RuntimeException("Failed to load file", e);
-//                    }
-//                })
-//                .subscribeOn(Schedulers.boundedElastic());
-//    }
 
     public Mono<FileEntity> getFileById(Long id) {
         return Mono.fromCallable(() -> fileRepository.findById(id).orElseThrow())
