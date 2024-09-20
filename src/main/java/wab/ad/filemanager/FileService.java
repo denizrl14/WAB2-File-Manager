@@ -18,7 +18,7 @@ public class FileService {
             FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
             this.fileRepository.save(fileEntity);
         } catch (IOException e) {
-            throw new IOException();
+            throw new IOException("Failed to store file: " + e.getMessage());
         }
     }
 

@@ -1,6 +1,6 @@
 services:
   app:
-    image: file-manager:latest
+    image: file-manager:synchronous
     build:
         context: .
         dockerfile: Dockerfile
@@ -10,15 +10,17 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:h2:mem:fmdb
       SPRING_DATASOURCE_USERNAME: deniz
-      Spring_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JAVA_TOOL_OPTIONS: "-Xms512m -Xmx6g -XX:MaxMetaspaceSize=512m"
+
 
     depends_on:
         - db
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 8G
           cpus: "4"
   db:
     image: thomseno/h2
