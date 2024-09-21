@@ -1,5 +1,6 @@
 package wab.ad.filemanager;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+@Slf4j
 @RestController
 @RequestMapping("/files")
 public class FileController {
