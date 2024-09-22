@@ -22,7 +22,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'jakarta.persistence:jakarta.persistence-api'
 
     // Lombok
@@ -30,9 +29,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // Database
-    runtimeOnly 'org.hibernate.orm:hibernate-core'
-    runtimeOnly 'com.h2database:h2'  // or your specific database connector
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'io.r2dbc:r2dbc-h2'
+    runtimeOnly 'io.r2dbc:r2dbc-h2'
 
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 

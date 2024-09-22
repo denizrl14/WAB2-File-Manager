@@ -1,6 +1,8 @@
 package wab.ad.filemanager;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Lob;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,11 +10,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Entity
+@Table("file_entity")
 public class FileEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String fileName;
