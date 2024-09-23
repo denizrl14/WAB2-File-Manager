@@ -24,7 +24,7 @@ public class FileController {
     public Mono<ResponseEntity<String>> handleFileUploadMultipart(@RequestPart("file") FilePart filePart) throws InterruptedException {
         log.info("----- Receiving file: " + filePart.filename() + " -----");
         log.info("..... Processing file: " + filePart.filename() + " .....");
-        Thread.sleep(1000);
+        Thread.sleep(500);
         log.info("----- Uploading file: " + filePart.filename() + " -----");
         return fileService.storeFile(filePart)
                 .then(Mono.just(ResponseEntity.ok("File uploaded successfully: " + filePart.filename())))
@@ -36,7 +36,7 @@ public class FileController {
     public Mono<ResponseEntity<byte[]>> downloadFile(@PathVariable String id) throws InterruptedException {
         log.info("----- Receiving Download-Request for file with id: " + id + " -----");
         log.info("..... Processing file: " + id + " .....");
-        Thread.sleep(1000);
+        Thread.sleep(500);
         log.info("<<<<< Downloading file with id: " + id + " <<<<<");
         return fileService.loadFile(id)
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(404)
