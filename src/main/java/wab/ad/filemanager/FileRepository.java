@@ -1,5 +1,7 @@
 package wab.ad.filemanager;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FileRepository extends JpaRepository<FileEntity, Long> {}
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+
+
+public interface FileRepository extends ReactiveCrudRepository<FileEntity, String> {}

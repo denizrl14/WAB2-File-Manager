@@ -1,27 +1,28 @@
 services:
   app:
     image: file-manager:reactive
-    build:
-      context: .
-      dockerfile: Dockerfile
     container_name: file-manager-service
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:h2:mem:fmdb
-      SPRING_DATASOURCE_USERNAME: deniz
-      SPRING_DATASOURCE_PASSWORD: password
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      JAVA_TOOL_OPTIONS: "-Xms512m -Xmx2048m -XX:+UseG1GC"
-    depends_on:
-      - db
     deploy:
       resources:
         limits:
-          memory: 8G
-          cpus: "4"
+          memory: 1G
+          cpus: "1"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+
   db:
-    image: thomseno/h2
-    container_name: h2-database
+    image: mongo
+    container_name: mongodb
     ports:
-      - "8082:8082"
+      - "27017:27017"
+    volumes:
+      - data:/data
+
+volumes:
+    data:
+      {}

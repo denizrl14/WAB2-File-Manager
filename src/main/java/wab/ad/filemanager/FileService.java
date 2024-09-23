@@ -1,11 +1,17 @@
 package wab.ad.filemanager;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-import java.io.IOException;
 
+import java.util.Objects;
+
+@Slf4j
 @Service
 public class FileService {
 
@@ -15,21 +21,32 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
-    public Mono<Void> store(MultipartFile file) {
-        return Mono.fromRunnable(() -> {
-            try {
-                FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
-                this.fileRepository.save(fileEntity);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to store file", e);
-            }
-        }).subscribeOn(Schedulers.boundedElastic())
+    public Mono<Void> storeFile(FilePart filePart) {
+        return DataBufferUtils.join(filePart.content())
+                .flatMap(dataBuffer -> {
+                    byte[] fileBytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(fileBytes);
+                    DataBufferUtils.release(dataBuffer);
+                    FileEntity fileEntity = new FileEntity(
+                            filePart.filename(),
+                            Objects.requireNonNull(filePart.headers().getContentType()).toString(),
+                            fileBytes.length,
+                            fileBytes);
+                    return fileRepository.save(fileEntity);})
                 .then();
     }
 
-    public Mono<FileEntity> getFileById(Long id) {
-        return Mono.fromCallable(() -> fileRepository.findById(id).orElseThrow())
-                .subscribeOn(Schedulers.boundedElastic());
+    public Mono<ResponseEntity<byte[]>> loadFile(String id) {
+        return getFileById(id)
+                .map(fileEntity -> ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(fileEntity.getFileType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileEntity.getFileName() + "\"")
+                        .body(fileEntity.getContent()));
+    }
+
+    public Mono<FileEntity> getFileById(String id) {
+        return fileRepository.findById(id)
+                .switchIfEmpty(Mono.error(new RuntimeException("File not found")));
     }
 
 }
