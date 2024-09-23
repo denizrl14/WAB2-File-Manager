@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Slf4j
@@ -24,51 +21,18 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
-    // Store file using non-blocking I/O with DataBuffer
     public Mono<Void> storeFile(FilePart filePart) {
-        return DataBufferUtils.join(filePart.content()) // Joins the DataBuffers into a single DataBuffer
+        return DataBufferUtils.join(filePart.content())
                 .flatMap(dataBuffer -> {
                     byte[] fileBytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(fileBytes);
-                    DataBufferUtils.release(dataBuffer); // Release buffer to prevent memory leaks
+                    DataBufferUtils.release(dataBuffer);
                     FileEntity fileEntity = new FileEntity(
                             filePart.filename(),
                             Objects.requireNonNull(filePart.headers().getContentType()).toString(),
                             fileBytes.length,
                             fileBytes);
-                    log.info(">>> >>> FileEntity created: " + fileEntity.getFileName() + " >>> >>>");
-
-                    return fileRepository.save(fileEntity)
-                            .doOnSuccess(savedEntity -> log.info(">>> >>> File with id: " + savedEntity.getId()
-                                    + " successfully stored in the database: " + savedEntity.getFileName() + " >>> >>>"));
-                })
-                .then();
-    }
-
-    // New method to store file content from String
-    public Mono<Void> storeFileContent(String content) {
-        return Mono.fromCallable(() -> {
-                    byte[] fileBytes = content.getBytes(StandardCharsets.UTF_8);
-
-                    // You can assign a default filename or extract it from the content if possible
-                    String filename = "uploaded_text.txt";
-
-                    Thread.sleep(1000);
-                    // Create a new FileEntity and save to database
-                    FileEntity fileEntity = new FileEntity(
-                            filename,
-                            MediaType.TEXT_PLAIN_VALUE,
-                            fileBytes.length,
-                            fileBytes);
-                    log.info(">>> >>> FileEntity created from text content: " + fileEntity.getFileName() + " >>> >>>");
-
-                    return fileEntity;
-                })
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(fileEntity -> fileRepository.save(fileEntity)
-                        .doOnSuccess(savedEntity -> log.info(">>> >>> Text content successfully stored in the database with id: "
-                                + savedEntity.getId() + " >>> >>>"))
-                )
+                    return fileRepository.save(fileEntity);})
                 .then();
     }
 
@@ -85,8 +49,4 @@ public class FileService {
                 .switchIfEmpty(Mono.error(new RuntimeException("File not found")));
     }
 
-    public Flux<FileEntity> getAllFiles() {
-        return fileRepository.findAll()
-                .switchIfEmpty(Mono.error(new RuntimeException("No files found")));
-    }
 }
