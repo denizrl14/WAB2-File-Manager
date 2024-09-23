@@ -31,8 +31,11 @@ public class FileService {
                     byte[] fileBytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(fileBytes);
                     DataBufferUtils.release(dataBuffer); // Release buffer to prevent memory leaks
-
-                    // Create a new FileEntity and save to database
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     FileEntity fileEntity = new FileEntity(
                             filePart.filename(),
                             Objects.requireNonNull(filePart.headers().getContentType()).toString(),
@@ -55,6 +58,7 @@ public class FileService {
                     // You can assign a default filename or extract it from the content if possible
                     String filename = "uploaded_text.txt";
 
+                    Thread.sleep(1000);
                     // Create a new FileEntity and save to database
                     FileEntity fileEntity = new FileEntity(
                             filename,
@@ -73,7 +77,7 @@ public class FileService {
                 .then();
     }
 
-    public Mono<ResponseEntity<byte[]>> loadFile(Long id) {
+    public Mono<ResponseEntity<byte[]>> loadFile(String id) {
         return getFileById(id)
                 .map(fileEntity -> ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(fileEntity.getFileType()))
@@ -81,7 +85,7 @@ public class FileService {
                         .body(fileEntity.getContent()));
     }
 
-    public Mono<FileEntity> getFileById(Long id) {
+    public Mono<FileEntity> getFileById(String id) {
         return fileRepository.findById(id)
                 .switchIfEmpty(Mono.error(new RuntimeException("File not found")));
     }

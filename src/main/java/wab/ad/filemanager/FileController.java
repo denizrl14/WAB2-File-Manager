@@ -30,16 +30,16 @@ public class FileController {
                         .body("Failed to upload file: " + e.getMessage())));
     }
 
-    @PostMapping(value = "/upload", consumes = { MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public Mono<ResponseEntity<String>> handleFileUploadPlainText(@RequestBody String fileContent) {
-        return fileService.storeFileContent(fileContent)
-                .then(Mono.just(ResponseEntity.ok("File content uploaded successfully")))
-                .onErrorResume(e -> Mono.just(ResponseEntity.status(500)
-                        .body("Failed to upload file content: " + e.getMessage())));
-    }
+//    @PostMapping(value = "/upload", consumes = { MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE })
+//    public Mono<ResponseEntity<String>> handleFileUploadPlainText(@RequestBody String fileContent) {
+//        return fileService.storeFileContent(fileContent)
+//                .then(Mono.just(ResponseEntity.ok("File content uploaded successfully")))
+//                .onErrorResume(e -> Mono.just(ResponseEntity.status(500)
+//                        .body("Failed to upload file content: " + e.getMessage())));
+//    }
 
     @GetMapping("/download/{id}")
-    public Mono<ResponseEntity<byte[]>> downloadFile(@PathVariable Long id) {
+    public Mono<ResponseEntity<byte[]>> downloadFile(@PathVariable String id) {
         return fileService.loadFile(id)
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(404)
                         .body(("Failed to download file: " + e.getMessage()).getBytes(StandardCharsets.UTF_8))));

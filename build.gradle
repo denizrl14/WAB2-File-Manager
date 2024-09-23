@@ -28,10 +28,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // Database
-    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-    implementation 'io.r2dbc:r2dbc-h2'
-    runtimeOnly 'io.r2dbc:r2dbc-h2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
+
 
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
