@@ -23,7 +23,8 @@ public class FileController {
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<String>> handleFileUploadMultipart(@RequestPart("file") FilePart filePart) {
+    public Mono<ResponseEntity<String>> handleFileUploadMultipart(@RequestPart("file") FilePart filePart) throws InterruptedException {
+        Thread.sleep(10000);
         return fileService.storeFile(filePart)
                 .then(Mono.just(ResponseEntity.ok("File uploaded successfully: " + filePart.filename())))
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(500)

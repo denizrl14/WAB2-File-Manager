@@ -31,11 +31,6 @@ public class FileService {
                     byte[] fileBytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(fileBytes);
                     DataBufferUtils.release(dataBuffer); // Release buffer to prevent memory leaks
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
                     FileEntity fileEntity = new FileEntity(
                             filePart.filename(),
                             Objects.requireNonNull(filePart.headers().getContentType()).toString(),
