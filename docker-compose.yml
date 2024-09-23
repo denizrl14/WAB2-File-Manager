@@ -7,8 +7,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: "1"
+          memory: 8G
+          cpus: "6"
+    networks:
+      - file-manager-network
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,9 +22,17 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
-    volumes:
-      - data:/data
+    networks:
+      - file-manager-network
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
     data:
       {}
+networks:
+    file-manager-network:
+        driver: bridge
