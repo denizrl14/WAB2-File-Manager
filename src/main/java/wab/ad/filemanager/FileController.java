@@ -19,7 +19,8 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) throws InterruptedException {
+        Thread.sleep(1000);
         log.info("<<<<< Uploading file: " + file.getOriginalFilename() + " <<<<<");
         try {
             fileService.storeFile(file);
