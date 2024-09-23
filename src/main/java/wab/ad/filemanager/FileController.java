@@ -23,7 +23,7 @@ public class FileController {
         log.info("----- Receiving file: " + file.getOriginalFilename() + " -----");
         try {
             log.info("..... Processing file: " + file.getOriginalFilename() + " .....");
-            Thread.sleep(1000);
+            Thread.sleep(500);
             log.info(">>>>> Storing File: " + file.getOriginalFilename() + " >>>>>");
             fileService.storeFile(file);
             return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
@@ -40,7 +40,7 @@ public class FileController {
         try {
             FileEntity fileEntity = fileService.getFileById(id);
             log.info("..... Processing file: " + fileEntity.getFileName() + " .....");
-            Thread.sleep(1000);
+            Thread.sleep(500);
             byte[] fileContent = fileEntity.getContent();
             log.info("<<<<< Downloading file: " + fileEntity.getFileName() + " <<<<<");
             return ResponseEntity.ok()
