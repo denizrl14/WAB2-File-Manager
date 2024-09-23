@@ -30,7 +30,7 @@ public class FileController {
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
+    public ResponseEntity<byte[]> downloadFile(@PathVariable String id) {
         log.info(">>>>> Downloading file with id: " + id + " >>>>>");
         try {
             FileEntity fileEntity = fileService.getFileById(id);

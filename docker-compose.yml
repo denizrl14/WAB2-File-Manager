@@ -7,17 +7,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 8G
-          cpus: "4"
-        reservations:
-          memory: 4G
-          cpus: "2"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:h2:mem:fmdb
-      SPRING_DATASOURCE_USERNAME: deniz
-      SPRING_DATASOURCE_PASSWORD: password
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      JAVA_TOOL_OPTIONS: "-Xms512m -Xmx6g -XX:MaxMetaspaceSize=512m -Djava.util.concurrent.ForkJoinPool.common.parallelism=4"
+          memory: 1G
+          cpus: "1"
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,7 +16,13 @@ services:
       - db
 
   db:
-    image: thomseno/h2
-    container_name: h2-database
+    image: mongo
+    container_name: mongodb
     ports:
-      - "8082:8082"
+      - "27017:27017"
+    volumes:
+      - data:/data
+
+volumes:
+    data:
+      {}

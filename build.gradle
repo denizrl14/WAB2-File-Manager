@@ -26,6 +26,8 @@ dependencies {
 
     runtimeOnly 'org.hibernate.orm:hibernate-core:6.2.0.Final'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.h2database:h2'
 

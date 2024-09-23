@@ -22,7 +22,7 @@ public class FileService {
         }
     }
 
-    public FileEntity getFileById(Long id) throws IOException{
+    public FileEntity getFileById(String id) throws IOException{
         return fileRepository.findById(id).orElseThrow(() -> new IOException("File not found"));
     }
 
