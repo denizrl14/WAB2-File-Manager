@@ -19,10 +19,10 @@ public class FileService {
             this.fileRepository.save(fileEntity);
         } catch (IOException e) {
             throw new IOException("Failed to store file: " + e.getMessage());
-    }
+        }
     }
 
-    public FileEntity getFileById(String id) throws IOException{
+    public FileEntity getFileById(String id) throws IOException {
         return fileRepository.findById(id).orElseThrow(() -> new IOException("File not found"));
     }
 

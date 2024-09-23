@@ -31,7 +31,4 @@ public class FileEntity {
         this.size = size;
         this.content = content;
     }
-
-    public FileEntity() {}
-
 }
