@@ -15,10 +15,13 @@ public class FileService {
 
     public void storeFile(MultipartFile file) throws IOException {
         try {
+            Thread.sleep(1000);
             FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
             this.fileRepository.save(fileEntity);
         } catch (IOException e) {
             throw new IOException("Failed to store file: " + e.getMessage());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
